@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>STYLE BOOK \u2014 Premium Lookbook</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root {
+    --bg: #080a0f;
+    --surface: #0d1017;
+    --card: #111520;
+    --border: rgba(255,255,255,0.06);
+    --accent: #7DF9E0;
+    --accent2: #FF6B9D;
+    --accent3: #FFD166;
+    --text: #e8eaf0;
+    --muted: #5a6075;
+    --glow: rgba(125,249,224,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  #cursor {
+    position: fixed; width:12px; height:12px;
+    background: var(--accent); border-radius:50%;
+    pointer-events:none; z-index:9999;
+    transition: transform 0.1s, opacity 0.1s;
+    mix-blend-mode: difference;
+  }
+  #cursor-ring {
+    position:fixed; width:36px; height:36px;
+    border:1px solid rgba(125,249,224,0.5);
+    border-radius:50%; pointer-events:none; z-index:9998;
+    transition: transform 0.25s ease, opacity 0.2s;
+  }
+
+  /* Three.js canvas bg */
+  #three-canvas {
+    position: fixed; top:0; left:0;
+    width:100%; height:100%; z-index:0;
+    pointer-events:none; opacity:0.55;
+  }
+
+  .content { position:relative; z-index:2; }
+
+  /* \u2500\u2500\u2500 HERO \u2500\u2500\u2500 */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction:column;
+    justify-content:center; align-items:center;
+    text-align:center; padding:2rem;
+    position:relative;
+  }
+
+  .hero-tag {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.7rem; letter-spacing:0.4em;
+    color: var(--accent); text-transform:uppercase;
+    margin-bottom:1.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem,15vw,13rem);
+    line-height:0.9; letter-spacing:0.02em;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, #fff 100%);
+    background-size:200%;
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    animation: fadeUp 0.9s 0.1s ease both, shimmer 4s linear infinite;
+  }
+
+  @keyframes shimmer { 0%{background-position:0%} 100%{background-position:200%} }
+
+  .hero-sub {
+    font-size:0.85rem; letter-spacing:0.25em; color:var(--muted);
+    margin-top:1.5rem; text-transform:uppercase;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+
+  .hero-scroll {
+    position:absolute; bottom:2.5rem;
+    display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+    animation: fadeUp 1s 0.8s ease both;
+  }
+  .hero-scroll span { font-size:0.65rem; letter-spacing:0.3em; color:var(--muted); }
+  .scroll-line {
+    width:1px; height:50px;
+    background:linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+  @keyframes scrollPulse { 0%,100%{opacity:0.3;transform:scaleY(0.5)} 50%{opacity:1;transform:scaleY(1)} }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(30px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* \u2500\u2500\u2500 RULES STRIP \u2500\u2500\u2500 */
+  .rules-strip {
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    padding:1.2rem 0; overflow:hidden;
+    position:relative;
+  }
+  .rules-track {
+    display:flex; gap:3rem; white-space:nowrap;
+    animation: ticker 25s linear infinite;
+  }
+  .rules-track:hover { animation-play-state:paused; }
+  .rule-item {
+    display:flex; align-items:center; gap:0.75rem;
+    font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase;
+    color:var(--muted); flex-shrink:0;
+  }
+  .rule-item::before { content:'\u25c6'; color:var(--accent); font-size:0.5rem; }
+  @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* \u2500\u2500\u2500 SECTION \u2500\u2500\u2500 */
+  .section {
+    padding:6rem 2rem;
+    max-width:1200px; margin:0 auto;
+  }
+
+  .section-header {
+    display:flex; align-items:flex-end; justify-content:space-between;
+    margin-bottom:3rem; gap:1rem;
+    border-bottom:1px solid var(--border); padding-bottom:1.5rem;
+  }
+  .section-num {
+    font-family:'Noto Sans JP',sans-serif;
+    font-size:0.65rem; color:var(--accent);
+    letter-spacing:0.3em;
+  }
+  .section-title {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(2.5rem,5vw,4rem);
+    letter-spacing:0.05em; line-height:1;
+  }
+  .section-note { font-size:0.75rem; color:var(--muted); text-align:right; }
+
+  /* \u2500\u2500\u2500 COMBO CARDS \u2500\u2500\u2500 */
+  .combos-grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
+    gap:1.5rem;
+  }
+
+  .combo-card {
+    background: var(--card);
+    border:1px solid var(--border);
+    border-radius:16px; overflow:hidden;
+    position:relative;
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1),
+                border-color 0.3s, box-shadow 0.3s;
+    cursor:pointer;
+  }
+
+  .combo-card::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(circle at 50% 0%, var(--glow), transparent 70%);
+    opacity:0; transition:opacity 0.3s;
+  }
+
+  .combo-card:hover {
+    transform:translateY(-8px) scale(1.01);
+    border-color: rgba(125,249,224,0.3);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(125,249,224,0.1);
+  }
+  .combo-card:hover::before { opacity:1; }
+
+  .card-visual {
+    height:180px; position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .outfit-mannequin {
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+
+  .mannequin-svg { width:90px; height:auto; position:relative; z-index:2; }
+
+  .card-glow {
+    position:absolute; inset:0;
+    opacity:0.5;
+  }
+
+  .card-body { padding:1.5rem; }
+
+  .card-number {
+    font-family:'Noto Sans JP',sans-serif;
+    font-size:0.6rem; letter-spacing:0.3em;
+    color:var(--accent); margin-bottom:0.5rem;
+  }
+
+  .card-name {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:1.6rem; letter-spacing:0.05em;
+    margin-bottom:1rem; line-height:1;
+  }
+
+  .card-occasion {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    background:rgba(125,249,224,0.08);
+    border:1px solid rgba(125,249,224,0.15);
+    border-radius:30px; padding:0.3rem 0.85rem;
+    font-size:0.65rem; letter-spacing:0.15em;
+    color:var(--accent); text-transform:uppercase;
+    margin-bottom:1.2rem;
+  }
+
+  .pieces-list { display:flex; flex-direction:column; gap:0.6rem; }
+
+  .piece-row {
+    display:flex; align-items:flex-start; gap:0.75rem;
+    font-size:0.78rem;
+  }
+  .piece-label {
+    font-size:0.6rem; letter-spacing:0.15em; color:var(--muted);
+    text-transform:uppercase; min-width:45px; padding-top:0.15rem;
+  }
+  .piece-value { color:var(--text); font-weight:500; line-height:1.4; }
+
+  .card-divider {
+    height:1px; background:var(--border); margin:1rem 0;
+  }
+
+  /* Color swatches */
+  .swatches { display:flex; gap:0.4rem; margin-top:0.75rem; }
+  .swatch {
+    width:18px; height:18px; border-radius:50%;
+    border:2px solid rgba(255,255,255,0.08);
+    transition:transform 0.2s;
+  }
+  .swatch:hover { transform:scale(1.3); }
+
+  /* \u2500\u2500\u2500 RULES SECTION \u2500\u2500\u2500 */
+  .rules-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:1rem;
+  }
+
+  .rule-card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:1.5rem;
+    display:flex; align-items:flex-start; gap:1rem;
+    transition:border-color 0.25s, transform 0.25s;
+  }
+  .rule-card:hover {
+    border-color:rgba(125,249,224,0.25);
+    transform:translateX(4px);
+  }
+
+  .rule-icon {
+    width:36px; height:36px; border-radius:8px;
+    background:rgba(125,249,224,0.1);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1rem; flex-shrink:0;
+  }
+
+  .rule-text {
+    font-size:0.82rem; line-height:1.6; color:var(--text); font-weight:400;
+  }
+
+  .rule-num {
+    font-family:'Noto Sans JP',sans-serif;
+    font-size:0.6rem; color:var(--accent);
+    letter-spacing:0.25em; margin-bottom:0.35rem;
+  }
+
+  /* \u2500\u2500\u2500 FOOTER \u2500\u2500\u2500 */
+  .footer {
+    border-top:1px solid var(--border);
+    padding:2.5rem; text-align:center;
+    display:flex; flex-direction:column; align-items:center; gap:0.75rem;
+  }
+  .footer-logo {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:2rem; letter-spacing:0.1em;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .footer-note { font-size:0.65rem; color:var(--muted); letter-spacing:0.2em; }
+
+  /* Floating particles */
+  .particle {
+    position:fixed; pointer-events:none; z-index:1;
+    border-radius:50%;
+    animation: float linear infinite;
+  }
+  @keyframes float {
+    from { transform:translateY(100vh) rotate(0deg); opacity:0; }
+    10%  { opacity:1; }
+    90%  { opacity:0.5; }
+    to   { transform:translateY(-10vh) rotate(720deg); opacity:0; }
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity:0; transform:translateY(40px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity:1; transform:translateY(0);
+  }
+
+  /* Active card expanded state */
+  .combo-card.active {
+    border-color: rgba(125,249,224,0.4);
+    box-shadow:0 0 30px rgba(125,249,224,0.12);
+  }
+
+  /* Noise overlay */
+  body::after {
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:3; opacity:0.4;
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<canvas id="three-canvas"></canvas>
+
+<div class="content">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">\u30b9\u30bf\u30a4\u30eb\u30d6\u30c3\u30af \u2014 Personal Style Guide \u2726 2025</div>
+    <h1 class="hero-title">STYLE<br>BOOK</h1>
+    <p class="hero-sub">5 Premium Outfits \u00b7 Rules to Live By</p>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- RULES TICKER -->
+  <div class="rules-strip">
+    <div class="rules-track" id="ticker"></div>
+  </div>
+
+  <!-- COMBOS -->
+  <section class="section">
+    <div class="section-header reveal">
+      <div>
+        <div class="section-num">01 \u2014 OUTFITS</div>
+        <h2 class="section-title">THE COMBOS</h2>
+      </div>
+      <div class="section-note">Hover to explore<br>each look</div>
+    </div>
+
+    <div class="combos-grid" id="combos-grid"></div>
+  </section>
+
+  <!-- RULES -->
+  <section class="section" style="padding-top:0">
+    <div class="section-header reveal">
+      <div>
+        <div class="section-num">02 \u2014 PRINCIPLES</div>
+        <h2 class="section-title">THE RULES</h2>
+      </div>
+      <div class="section-note">Non-negotiable</div>
+    </div>
+    <div class="rules-grid" id="rules-grid"></div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-logo">STYLE BOOK</div>
+    <div class="footer-note">Your personal lookbook \u00b7 Fit first, always.</div>
+  </footer>
+</div>
+
+<script>
+// \u2500\u2500\u2500 DATA \u2500\u2500\u2500
+const combos = [
+  {
+    name:"Best Overall", number:"01",
+    top:"White plain t-shirt", layer:"Beige/cream overshirt or light jacket",
+    pants:"Dark blue slim-fit jeans", shoes:"Clean white sneakers",
+    occasion:"Daily wear / casual outings",
+    colors:["#FFFFFF","#D4C5A9","#1A2E4A","#F5F5F0"],
+    palette:["rgba(255,255,255,0.08)","rgba(212,197,169,0.12)"],
+    accent:"#7DF9E0"
+  },
+  {
+    name:"Clean & Mature", number:"02",
+    top:"Black or dark navy plain shirt", layer:null,
+    pants:"Light grey tapered trousers", shoes:"Black sneakers or black loafers",
+    occasion:"Semi-formal / meetings",
+    colors:["#1a1a1a","#0d1b2a","#d0d0d0","#111111"],
+    palette:["rgba(26,26,26,0.15)","rgba(200,200,200,0.08)"],
+    accent:"#FF6B9D"
+  },
+  {
+    name:"Street Style", number:"03",
+    top:"Olive green t-shirt", layer:null,
+    pants:"Black tapered cargos", shoes:"White or grey sneakers",
+    occasion:"Casual / hangout",
+    colors:["#6B7C45","#111111","#E8E8E8","#888888"],
+    palette:["rgba(107,124,69,0.15)","rgba(17,17,17,0.2)"],
+    accent:"#FFD166"
+  },
+  {
+    name:"Minimal Model Look", number:"04",
+    top:"Beige or off-white t-shirt", layer:null,
+    pants:"Black straight-fit trousers", shoes:"White sneakers",
+    occasion:"Clean aesthetic / photos",
+    colors:["#EDE8D9","#1a1a1a","#FFFFFF","#C4B89A"],
+    palette:["rgba(237,232,217,0.1)","rgba(26,26,26,0.15)"],
+    accent:"#C9B8FF"
+  },
+  {
+    name:"Date Outfit", number:"05",
+    top:"Light blue or white shirt", layer:null,
+    pants:"Dark j
